@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <style>
+      .search-box{
+        width: 300px;
+      }
+      #search-field{
+        width: 100%;
+      }
+      #search-list{
+        width:100%;
+        border:1px solid;
+      }
+    </style>
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+    <div class="search-box">
+      <input type="text" id="search-field" name="keyword"/>
+    </div>
+    <div class="search-box">
+      <div id="search-list"></div>
+    </div>
+
+    <script src="/javascripts/jquery-3.1.1.min.js"></script>
+    <script>
+      $(function(){
+        $("#search-field").keyup(function(){
+          $.ajax({
+            url:"/search",
+            
+          });
+          $("#search-list").html("<div>"+this.value+"</div>");
+        });
+      });
+    </script>
+  </body>
+</html>
