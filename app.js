@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
+var Searcher = require('./lib/searcher');
 
 var app = express();
 
@@ -24,6 +25,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/users', users);
+
+
+var searcher=new Searcher();
+searcher.search("d:/");
+app.use('/count',function(req,res,next){
+  res.json(200,{
+    count:searcher.fileLen()
+  });
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
