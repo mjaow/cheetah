@@ -5,7 +5,6 @@ var router = express.Router();
 
 router.post('/', function (req, res, next) {
     var fpath = req.body.fpath;
-    console.log('-----'+fpath);
     child_process.exec('open ' + fpath, function (error, stdout, stderr) {
         var res_message;
         if(error){
