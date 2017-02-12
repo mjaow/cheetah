@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-    <style>
+
+<head>
+  <title>
+    <%= title %>
+  </title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+  <style>
       .search-box{
         width: 300px;
       }
@@ -14,29 +17,146 @@
         width:100%;
         border:1px solid;
       }
+      .selected{
+        background: #ccc;
+      }
     </style>
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-    <div class="search-box">
-      <input type="text" id="search-field" name="keyword"/>
-    </div>
-    <div class="search-box">
-      <div id="search-list"></div>
-    </div>
+</head>
 
-    <script src="/javascripts/jquery-3.1.1.min.js"></script>
-    <script>
-      $(function(){
-        $("#search-field").keyup(function(){
-          $.ajax({
-            url:"/search",
-            
-          });
-          $("#search-list").html("<div>"+this.value+"</div>");
+<body>
+  <h1>
+    <%= title %>
+  </h1>
+  <p>Welcome to
+    <%= title %>
+  </p>
+  <div class="search-box">
+    <input type="text" id="search-field" name="keyword" />
+  </div>
+  <div class="search-box">
+    <div id="search-list"></div>
+  </div>
+
+  <script src="/javascripts/jquery-3.1.1.min.js"></script>
+  <script>
+    $(function () {
+      $("#search-field").keyup(function (e) {
+        if(e.which===38||e.which===40||e.which===13){
+          return;
+        }
+        var keyword = this.value;
+        $.ajax({
+          url: "/",
+          type: "POST",
+          data: {
+            keyword: keyword
+          },
+          success: function (data) {
+            var h = "";
+            for (var i in data) {
+              if (i == 0) {
+                h += "<div class='selected result-item' path='" + data[i].encode_path + "'>" + data[i].fname + "</div>";
+              } else {
+                h += "<div class='result-item' path='" + data[i].encode_path + "'>" + data[i].fname + "</div>";
+              }
+            }
+            $("#search-list").html(h);
+            $(".result-item").bind('mousemove', function () {
+              $('.result-item').removeClass("selected");
+              $(this).addClass('selected');
+            });
+          }
         });
+        // $("#search-list").html("<div>" + this.value + "</div>");
       });
-    </script>
-  </body>
+
+      var handle_enter = function () {
+        var path = $('.selected').attr('path');
+        if (path) {
+          $.ajax({
+            url: "cmd",
+            type: "POST",
+            data: {
+              fpath: path
+            },
+            success: function (data) {
+              // alert(data);
+              if (data.code !== 1) {
+                alert(data.msg);
+              }
+            }
+          });
+        }
+      };
+
+      var check_selected = function () {
+        var items = $(".result-item");
+        for (var i in items) {
+          if ($(items[i]).hasClass('selected')) {
+            return {
+              pos: i,
+              len: items.length
+            };
+          }
+        }
+        throw new Error("illegal pos");
+      };
+
+      var select = function (pos) {
+        $('.result-item').removeClass('selected');
+        var item = $('.result-item')[pos];
+        $(item).addClass('selected');
+      };
+
+      var handle_up = function () {
+        if (len === 0 || len === 1) {
+          return;
+        }
+
+        var rs = check_selected();
+        var pos = rs.pos;
+        var len = rs.len;
+
+        if (pos == 0) {
+          pos = len - 1;
+        } else {
+          pos--;
+        }
+
+        select(pos);
+      };
+
+      var handle_down = function () {
+        if (len === 0 || len === 1) {
+          return;
+        }
+
+        var rs = check_selected();
+        var pos = rs.pos;
+        var len = rs.len;
+
+        if (pos == len - 1) {
+          pos = 0;
+        } else {
+          pos++;
+        }
+
+        select(pos);
+      };
+
+      $(document).keydown(function (e) {
+        if (e.which == 13) {
+          handle_enter();
+        } else if (e.which == 38) {
+          handle_up();
+        } else if (e.which == 40) {
+          handle_down();
+        }
+      });
+
+    });
+
+  </script>
+</body>
+
 </html>

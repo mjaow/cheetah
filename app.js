@@ -6,8 +6,8 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
+var cmd =require('./routes/cmd');
 var users = require('./routes/users');
-var Searcher = require('./lib/searcher');
 
 var app = express();
 
@@ -24,11 +24,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
+app.use('/cmd',cmd);
 app.use('/users', users);
 
-
-var searcher=new Searcher();
-searcher.search("d:/");
 app.use('/count',function(req,res,next){
   res.json(200,{
     count:searcher.fileLen()
