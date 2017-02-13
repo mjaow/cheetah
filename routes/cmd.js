@@ -1,25 +1,28 @@
 var express = require('express');
-
 var child_process = require('child_process');
+var System=require('../lib/os_system');
 var router = express.Router();
 
 router.post('/', function (req, res, next) {
     var fpath = req.body.fpath;
-    child_process.exec('open ' + fpath, function (error, stdout, stderr) {
-        var res_message;
+    var cmd;
+    if(System.isMac()){
+        cmd='open ' + fpath;
+    }else{
+        cmd="\""+fpath+"\"";
+    }
+
+    child_process.exec(cmd, function (error, stdout, stderr) {
         if(error){
-            res_message={
-                code:0,
-                msg:stderr
-            };
+            console.error(stderr);
         }else{
-            res_message={
-                code:1,
-                msg:stdout
-            }
+            console.log(stdout);
         }
 
-        res.json(res_message);
+        res.json({
+            code:1,
+            msg:"success"
+        });
     });
 });
 

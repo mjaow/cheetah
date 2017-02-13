@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var Searcher = require('../lib/searcher');
 var searcher=new Searcher();
-searcher.search("/Users/loda/Documents");
+searcher.search("e:/");
 
 /* GET home page. */
 router.get('/', function (req, res, next) {

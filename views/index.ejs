@@ -2,49 +2,88 @@
 <html>
 
 <head>
-  <title>
-    <%= title %>
-  </title>
+  <title>Cheetah</title>
   <link rel='stylesheet' href='/stylesheets/style.css' />
   <style>
+      .container{
+        width: 800px;
+        margin: auto;
+        padding: auto;
+      }
       .search-box{
-        width: 300px;
+        width: 500px;
       }
       #search-field{
         width: 100%;
+        font-size: 1.5em;
       }
       #search-list{
         width:100%;
-        border:1px solid;
+        padding-bottom: 10px;
       }
       .selected{
         background: #ccc;
       }
-    </style>
+      .result-item{
+        margin-top: 5px;
+      }
+  </style>
 </head>
 
 <body>
-  <h1>
-    <%= title %>
-  </h1>
-  <p>Welcome to
-    <%= title %>
-  </p>
-  <div class="search-box">
-    <input type="text" id="search-field" name="keyword" />
-  </div>
-  <div class="search-box">
-    <div id="search-list"></div>
+  <div class="container">
+    <h1>Cheetah</h1>
+    <div class="search-box">
+      <input type="text" id="search-field" autocomplete="off" name="keyword" />
+    </div>
+    <div class="search-box">
+      <div id="search-list"></div>
+    </div>
   </div>
 
   <script src="/javascripts/jquery-3.1.1.min.js"></script>
   <script>
+
     $(function () {
+      var is_enter=function(event){
+        return event.which===13;
+      }
+
+      var is_up=function(event){
+        return event.which===38;
+      }
+
+      var is_down=function(event){
+        return event.which===40;
+      }
+
+      var is_blank_ch=function(ch){
+        if(!ch){
+          return true;
+        }
+
+        if($.trim(ch)===""){
+          return true;
+        }
+
+        return false;
+      }
+
       $("#search-field").keyup(function (e) {
-        if(e.which===38||e.which===40||e.which===13){
+        if(is_enter(e)||is_up(e)||is_down(e)){
           return;
         }
         var keyword = this.value;
+
+        if(is_blank_ch(keyword)){
+          $("#search-list").css({border:"0px"}).html("");
+          return;
+        }
+
+        if(keyword.startsWith("in ")){
+          return;
+        }
+
         $.ajax({
           url: "/",
           type: "POST",
@@ -60,14 +99,15 @@
                 h += "<div class='result-item' path='" + data[i].encode_path + "'>" + data[i].fname + "</div>";
               }
             }
-            $("#search-list").html(h);
+            $("#search-list").css({
+              border:"1px solid"
+            }).html(h);
             $(".result-item").bind('mousemove', function () {
-              $('.result-item').removeClass("selected");
-              $(this).addClass('selected');
-            });
+              select_element(this);
+            }).bind('click',handle_enter);
           }
         });
-        // $("#search-list").html("<div>" + this.value + "</div>");
+
       });
 
       var handle_enter = function () {
@@ -80,7 +120,6 @@
               fpath: path
             },
             success: function (data) {
-              // alert(data);
               if (data.code !== 1) {
                 alert(data.msg);
               }
@@ -106,6 +145,11 @@
         $('.result-item').removeClass('selected');
         var item = $('.result-item')[pos];
         $(item).addClass('selected');
+      };
+
+      var select_element=function(e){
+        $('.result-item').removeClass("selected");
+        $(e).addClass('selected');
       };
 
       var handle_up = function () {
@@ -145,11 +189,11 @@
       };
 
       $(document).keydown(function (e) {
-        if (e.which == 13) {
+        if (is_enter(e)) {
           handle_enter();
-        } else if (e.which == 38) {
+        } else if (is_up(e)) {
           handle_up();
-        } else if (e.which == 40) {
+        } else if (is_down(e)) {
           handle_down();
         }
       });
