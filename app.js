@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 var index = require('./routes/index');
 var cmd =require('./routes/cmd');
 var users = require('./routes/users');
+var count=require('./routes/count');
 
 var app = express();
 
@@ -27,11 +28,7 @@ app.use('/', index);
 app.use('/cmd',cmd);
 app.use('/users', users);
 
-app.use('/count',function(req,res,next){
-  res.json(200,{
-    count:searcher.fileLen()
-  });
-});
+app.use('/count',count);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -1,2 +1,2 @@
-var Searcher=require("../lib/searcher");
-var assert=require("assert");
+var s=require("../lib/searcher");
+var t=require("./demo/test_sg2");

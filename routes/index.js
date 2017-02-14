@@ -1,11 +1,13 @@
 var express = require('express');
 var router = express.Router();
-var Searcher = require('../lib/searcher');
+var searcher = require('../lib/searcher');
 var child_process=require('child_process');
-var searcher=new Searcher();
 
-child_process.fork();
-searcher.search("/Users/loda");
+var child=child_process.fork("./lib/searchAndIndex.js",[], {execArgv: ['--debug=5858']});
+
+child.on("message",function(data){
+  searcher.indexer.build(data.key,data.value);
+});
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -13,8 +15,7 @@ router.get('/', function (req, res, next) {
 });
 
 router.post('/', function (req, res, next) {
-  var k = req.body.keyword;
-  res.json(searcher.search_prefix(k,10));
+  res.json(searcher.search_prefix(req.body.keyword,10));
 });
 
 module.exports = router;
