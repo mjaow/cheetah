@@ -4,7 +4,7 @@ var router=express.Router();
 
 router.get('/',function(req,res,next){
     res.status(200).json({
-        count:searcher.fileLen()
+        count:searcher.file_count()
     });
 });
 

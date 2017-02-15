@@ -27,6 +27,16 @@
       .result-item{
         margin-top: 5px;
       }
+      .encode_path,.ftype{
+        display: none;
+      }
+      .fname{
+        font-size: 1.3em;
+      }
+      .fpath{
+        font-size: 0.5em;
+        color: #888;
+      }
   </style>
 </head>
 
@@ -93,11 +103,19 @@
           success: function (data) {
             var h = "";
             for (var i in data) {
-              if (i == 0) {
-                h += "<div class='selected result-item' path='" + data[i].encode_path + "'>" + data[i].fname + "</div>";
-              } else {
-                h += "<div class='result-item' path='" + data[i].encode_path + "'>" + data[i].fname + "</div>";
+              var d=data[i];
+              var class_name;
+              if(i==='0'){
+                class_name="selected result-item";
+              }else{
+                class_name="result-item";
               }
+              h += `<div class='${class_name}'>
+              <div class='fname'>${d.fname}</div>
+              <div class='fpath'>${d.fpath}</div>
+              <div class='encode_path'>${d.encode_path}</div>
+              <div class='ftype'>${d.ftype}</div>
+              </div>`;
             }
             $("#search-list").css({
               border:"1px solid"
@@ -111,13 +129,15 @@
       });
 
       var handle_enter = function () {
-        var path = $('.selected').attr('path');
+        var path = $('.selected > .encode_path').text();
+        var type= $('.selected > .ftype').text();
         if (path) {
           $.ajax({
             url: "cmd",
             type: "POST",
             data: {
-              fpath: path
+              fpath: path,
+              ftype:type
             },
             success: function (data) {
               if (data.code !== 1) {
@@ -133,7 +153,7 @@
         for (var i in items) {
           if ($(items[i]).hasClass('selected')) {
             return {
-              pos: i,
+              pos: parseInt(i),
               len: items.length
             };
           }
@@ -161,7 +181,7 @@
         var pos = rs.pos;
         var len = rs.len;
 
-        if (pos == 0) {
+        if (pos === 0) {
           pos = len - 1;
         } else {
           pos--;
@@ -179,7 +199,7 @@
         var pos = rs.pos;
         var len = rs.len;
 
-        if (pos == len - 1) {
+        if (pos === len - 1) {
           pos = 0;
         } else {
           pos++;
