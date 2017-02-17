@@ -1,10 +1,9 @@
-var dict=require('../data/dict');
-var assert=require('assert');
+var assert = require('assert');
 
- function isChinese(token){
-    for(var t of token){
-        var ch=t.charCodeAt(0);
-        if(!dict[ch]){
+function isChinese(token) {
+    var reg =/[\u4e00-\u9fa5]/;
+    for (var t of token) {
+        if (!reg.test(t)) {
             return false;
         }
     }
@@ -12,4 +11,4 @@ var assert=require('assert');
     return true;
 }
 // console.log();
-assert.ok(isChinese('中文汉字'));
+assert.ok(isChinese('中文汉字综上所.述王菲无法'));

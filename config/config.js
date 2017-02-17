@@ -1,5 +1,5 @@
 var conf={
-    base_path:["e:","d:"],
+    base_path:["e:/book"],
     priority:{
         pdf:5,
         exe:4

@@ -6,16 +6,18 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "bitset.js": "^4.0.0",
     "body-parser": "~1.16.0",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.0",
     "ejs": "~2.5.5",
     "express": "~4.14.1",
+    "heapdump": "~0.3.7",
     "morgan": "~1.7.0",
+    "nodejieba": "~2.2.4",
+    "pinyin": "~2.8.0",
     "serve-favicon": "~2.3.2",
-    "nodejieba":"~2.2.4",
-    "pinyin":"~2.8.0",
-    "textract":"~2.1.1"
+    "textract": "~2.1.1"
   },
   "devDependencies": {
     "@types/node": "^7.0.5"

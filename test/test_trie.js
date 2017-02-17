@@ -3,16 +3,16 @@ var assert=require('assert');
 
 var t=new Trie();
 
-t.put('java','java');
+t.put('java',true);
 
-t.put('java','j');
+t.put('java',true);
 
-t.put('python','python');
-t.put('c++','c++');
-t.put('c','c');
-t.put('php','php');
+t.put('python',true);
+t.put('c++',true);
+t.put('c',true);
+t.put('php',true);
 
-console.log(t.get_by_prefix(''));
+console.log(t.keys_with_prefix('pyh'));
 
 // var m={
 //     a:'aa',
