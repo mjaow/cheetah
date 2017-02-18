@@ -1,6 +1,6 @@
 var textract=require("textract");
 
-var filePath="E:/book/java/ActiveMQ in Action.pdf";
+var filePath="/Users/loda/Documents/维基百科－黑白棋.doc";
 textract.fromFileWithPath(filePath, function( error, text ) {
     if(error){
         console.error(error);
